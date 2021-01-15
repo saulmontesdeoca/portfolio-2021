@@ -42,15 +42,14 @@ document.body.appendChild( renderer.domElement );
 
 // document.onkeydown = handler;
 // document.onkeyup = handler;
-document.body.addEventListener('keyup', handler);
-document.body.addEventListener('keydown', handler);
+document.addEventListener('keyup', handler);
+document.addEventListener('keydown', handler);
 
-const maxSteerVal = 0.5;
-const maxForce = 1000;
-const brakeForce = 1000000;
-const handler = (event) => {
-    console.log('forward');
-    let up = (event.type == 'keyup');
+const maxSteerVal = 1;
+const maxForce = 100;
+const brakeForce = 100000;
+function handler (event) {
+    let up = (event.type === 'keyup');
 
     if(!up && event.type !== 'keydown'){
         return;
@@ -64,14 +63,13 @@ const handler = (event) => {
     switch(event.keyCode){
 
     case 38: // forward
-        console.log('forward');
-        seedScene.physics.vehicle.applyEngineForce(up ? 0 : -maxForce, 2);
-        seedScene.physics.vehicle.applyEngineForce(up ? 0 : -maxForce, 3);
+        seedScene.physics.vehicle.applyEngineForce(up ? 0 : maxForce, 2);
+        seedScene.physics.vehicle.applyEngineForce(up ? 0 : maxForce, 3);
         break;
 
     case 40: // backward
-        seedScene.physics.vehicle.applyEngineForce(up ? 0 : maxForce, 2);
-        seedScene.physics.vehicle.applyEngineForce(up ? 0 : maxForce, 3);
+        seedScene.physics.vehicle.applyEngineForce(up ? 0 : -maxForce, 2);
+        seedScene.physics.vehicle.applyEngineForce(up ? 0 : -maxForce, 3);
         break;
 
     case 66: // b
@@ -82,8 +80,6 @@ const handler = (event) => {
         break;
 
     case 39: // right
-        console.log('forward');
-
         seedScene.physics.vehicle.setSteeringValue(up ? 0 : -maxSteerVal, 0);
         seedScene.physics.vehicle.setSteeringValue(up ? 0 : -maxSteerVal, 1);
         break;

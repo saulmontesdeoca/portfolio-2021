@@ -22,22 +22,23 @@ export default class Physics { 
         // for car movement, friction between car and ground
         const groundMaterial = new CANNON.Material("groundMaterial");
         const wheelMaterial = new CANNON.Material("wheelMaterial");
-        const wheelGroundContactMaterial = window.wheelGroundContactMaterial = new CANNON.ContactMaterial(wheelMaterial, groundMaterial, {
-            friction: 0.3,
-            restitution: 0,
-            contactEquationStiffness: 1000
-        });
+        const wheelGroundContactMaterial = window.wheelGroundContactMaterial = new CANNON.ContactMaterial(
+            wheelMaterial,
+            groundMaterial,
+            {
+                friction: 0.3,
+                restitution: 0,
+                contactEquationStiffness: 1000
+            });
 
         // We must add the contact materials to the world
         this.world.addContactMaterial(wheelGroundContactMaterial);
-        // this.world.allowSleep = true
-        // this.world.defaultContactMaterial.friction = 0
-        // this.world.defaultContactMaterial.restitution = 0.2
+        this.world.allowSleep = true
     }
     setFloor()
     {
         // ground plane
-        const groundMaterial = new CANNON.Material();
+        const groundMaterial = new CANNON.Material("groundMaterial");
         this.groundShape = new CANNON.Plane();
         this.groundBody = new CANNON.Body({ mass: 0, material: groundMaterial });
         this.groundBody.addShape(this.groundShape);
@@ -92,28 +93,30 @@ export default class Physics { 
         const shape = new CANNON.Box(new CANNON.Vec3(0.56,0.04,0.14));
         this.skateboardBody = new CANNON.Body({
           mass: 10,
-        //   material: groundMaterial
+          material: groundMaterial
         });
         this.skateboardBody.linearDamping = this.damping;
         this.skateboardBody.addShape(shape);
-        this.skateboardBody.position.y = .05;
+        // this.skateboardBody.sleep();
+
+        this.skateboardBody.position.y = 1;
         this.skateboardBody.position.z = 0;
-        this.skateboardBody.angularVelocity.set(0, 0.5, 0);
+        this.skateboardBody.angularVelocity.set(0, 0, 0);
         this.world.addBody(this.skateboardBody);
 
         this.options = {
             radius: 0.04,
-            directionLocal: new CANNON.Vec3(0, -.3, 0),
-            suspensionStiffness: 1,
-            suspensionRestLength: 0.01,
+            directionLocal: new CANNON.Vec3(0, -.32, 0),
+            suspensionStiffness: 25,
+            suspensionRestLength: 0.3,
             frictionSlip: 5,
-            dampingRelaxation: 2.3,
-            dampingCompression: 4.4,
-            maxSuspensionForce: 100000,
+            dampingRelaxation: 1.8,
+            dampingCompression: 1.5,
+            maxSuspensionForce: 200000,
             rollInfluence:  0.01,
-            axleLocal: new CANNON.Vec3(0, 0, -1),
-            chassisConnectionPointLocal: new CANNON.Vec3(1, 1, 0),
-            maxSuspensionTravel: 0.3,
+            axleLocal: new CANNON.Vec3(0, 0, 1),
+            chassisConnectionPointLocal: new CANNON.Vec3(1, 0, 1),
+            maxSuspensionTravel: 0.02,
             customSlidingRotationalSpeed: -30,
             useCustomSlidingRotationalSpeed: true
         };
@@ -121,9 +124,9 @@ export default class Physics { 
         // Create the vehicle
         this.vehicle = new CANNON.RaycastVehicle({
             chassisBody: this.skateboardBody,
-            indexRightAxis: 0,
+            indexRightAxis: 2,
             indexUpAxis: 1,
-            indexLeftAxis: 2,
+            indexLeftAxis: 0,
         });
         this.options.chassisConnectionPointLocal.set(.311, 0, .111);
         this.vehicle.addWheel(this.options);
@@ -140,14 +143,18 @@ export default class Physics { 
         this.vehicle.addToWorld(this.world);
 
         let wheelBodies = [];
+        const wheelMaterial = new CANNON.Material("wheelMaterial");
         for(let i=0; i< this.vehicle.wheelInfos.length; i++){
+
             let wheel = this.vehicle.wheelInfos[i];
-            let cylinderShape = new CANNON.Cylinder(wheel.radius, wheel.radius, wheel.radius / 2, 10);
+            let cylinderShape = new CANNON.Cylinder(wheel.radius, wheel.radius, wheel.radius * 1.3, 20);
             let wheelBody = new CANNON.Body({
-                mass: 0
+                mass: 0,
+                material: wheelMaterial
             });
             wheelBody.type = CANNON.Body.KINEMATIC;
             wheelBody.collisionFilterGroup = 0; // turn off collisions
+
             let q = new CANNON.Quaternion();
             q.setFromAxisAngle(new CANNON.Vec3(0, 0, 1), Math.PI / 2);
             wheelBody.addShape(cylinderShape, new CANNON.Vec3(), q);
@@ -157,7 +164,7 @@ export default class Physics { 
 
         // // Update wheels
         let vehicle = this.vehicle
-        this.world.addEventListener('postStep', function(){
+        this.world.addEventListener('postStep', () => {
             for (let i = 0; i < vehicle.wheelInfos.length; i++) {
                 vehicle.updateWheelTransform(i);
                 let t = vehicle.wheelInfos[i].worldTransform;
