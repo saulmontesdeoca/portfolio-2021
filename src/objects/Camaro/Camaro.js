@@ -1,5 +1,4 @@
 import { Group } from 'three';
-import CANNON from 'cannon'
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import objModel from './model/obj/model.obj';
@@ -19,8 +18,9 @@ export default class Camaro extends Group {
         const objLoader = new OBJLoader();
         objLoader.setMaterials(materials);
         objLoader.load(objModel, object=>{
-            object.position.y = .5;
-            // object.scale.set(0.5, 0.5, 0.5);
+            object.position.x = -.05
+            object.rotateY(-Math.PI/8)
+            object.scale.set(1.5, 1.5, 1.5);
             this.add(object);
         });
     });

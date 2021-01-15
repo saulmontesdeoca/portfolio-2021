@@ -23,3 +23,4 @@ Built with the help of [Three Seed](https://github.com/edwinwebb/three-seed) ðŸ‘
  - [Nintendo Switch](https://poly.google.com/view/47Rdi4mHQjJ) by sugamo is licensed under CC BY.
  - [Bowling Pin](https://poly.google.com/view/0ZooEG4LdJF) by Poly by Google is licensed under CC BY.
  - [Mayan Temple](https://poly.google.com/view/cf3QwX0JqGN) by Steven Atkins is licensed under CC BY.
+ - [Skateboard](https://poly.google.com/view/7Dfn4VtTCWY) by Poly by Google is licensed under CC BY.

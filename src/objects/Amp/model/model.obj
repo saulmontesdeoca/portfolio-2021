@@ -1,6 +1,6 @@
 # This file uses meters as units for non-parametric coordinates.
 
-mtllib Guitar Amp.mtl
+mtllib ./materials.mtl
 g default
 v -153.079376 124.867424 89.341698
 v -152.051392 127.104553 87.104561

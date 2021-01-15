@@ -16,6 +16,8 @@
   },
   "dependencies": {
     "cannon": "^0.6.2",
+    "cannon-es": "^0.15.1",
+    "cannon-es-debugger": "^0.1.0",
     "three": "^0.104.0",
     "three-obj-loader": "^1.1.3",
     "webpack-cli": "^3.3.2"
